@@ -1,9 +1,7 @@
 {
   "db_name": "AB511-ClosureDB-Dev",
   "function_name": "ClosureBot-AB511-Dev",
-  "Thread-SouthernOntario": 1123519680917819503,
-  "Thread-GTA": 1123517850502565898,
-  "Thread-CentralOntario": 1123517842969604138,
-  "Thread-NorthernOntario": 1123519381499019386,
-  "Thread-CatchAll": 1123663045743354059
+  "Thread-Calgary": 1124658851027882005,
+  "Thread-Edmonton": 1124658756471505000,
+  "Thread-CatchAll": 1124658948117627013
 }
