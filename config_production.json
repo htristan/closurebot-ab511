@@ -4,6 +4,8 @@
   "Thread-Calgary": 1111,
   "Thread-Edmonton": 1111,
   "Thread-CatchAll": 1111,
+  "Thread-NorthOfEdmonton": 1111,
+  "Thread-SouthOfEdmonton": 1111,
   "license_notice": "Contains information licensed under the Open Government Licence – Alberta.",
   "timezone": "US/Mountain"
 }
