@@ -11,319 +11,144 @@ import os
 from datetime import datetime, timedelta, date
 import calendar
 from pytz import timezone
+import random
 
 # Define the coordinates of your polygon
-polygon_filterPolygon = Polygon([
-    (43.67878795749117, -79.93304294115251),
-    (43.66090777561015, -80.55651706224626),
-    (43.276195634296236, -82.07263034349626),
-    (42.8548164344217, -82.28274386888688),
-    (42.29456999770389, -82.46813815599626),
-    (42.22443967103919, -81.72244113451188),
-    (42.38998433799022, -80.97674411302752),
-    (42.72985557217411, -79.52654880052752),
-    (42.84273447508291, -78.86187594896501),
-    (43.268196428606124, -79.06237643724626),
-    (43.30418457436259, -79.67211764818376),
-    (43.67878795749117, -79.93304294115251)
+
+polygon_Edmonton = Polygon([
+   (53.24836842, -113.18427309),
+    (53.22671673, -113.56849409),
+    (53.23791725, -113.69823105),
+    (53.31474832, -113.91903339),
+    (53.4167272, -114.03255323),
+    (53.55553094, -114.03130576),
+    (53.68279995, -114.00885128),
+    (53.85974393, -113.84293767),
+    (53.87592649, -113.53855479),
+    (53.87739732, -113.2903081),
+    (53.78315977, -113.07075324),
+    (53.5762753, -113.01461706),
+    (53.24836842, -113.18427309),
 ])
 
-polygon_GTA = Polygon([
-    (43.87568031, -78.43468662),
-    (43.82078823, -78.88855484),
-    (43.74310867, -79.1407252),
-    (43.73611803, -79.13384386),
-    (43.59837333, -79.36036016),
-    (43.60378104, -79.43379127),
-    (43.40218933, -79.67253612),
-    (43.4786045, -79.80584269),
-    (43.69673616, -79.97053635),
-    (43.97844807, -79.69290989),
-    (44.007223, -79.28352851),
-    (44.02245114, -78.75180326),
-    (43.87568031, -78.43468662)
+polygon_NorthOfEdmonton = Polygon([
+    (53.50243339, -110.00377323),
+    (53.5762753, -113.01461706),
+    (53.78315977, -113.07075324),
+    (53.87739732, -113.2903081),
+    (53.87592649, -113.53855479),
+    (53.85974393, -113.84293767),
+    (53.68279995, -114.00885128),
+    (53.55553094, -114.03130576),
+    (53.59736172, -119.90627337),
+    (53.85107632, -120.01788168),
+    (54.96100652, -119.98712166),
+    (59.99900962, -119.95504949),
+    (60.02591534, -109.9782346),
+    (54.57031627, -109.9782346),
+    (54.0463325, -110.01212127),
+    (53.50243339, -110.00377323),
 ])
 
-polygon_CentralOntario = Polygon([
-    (43.69673616, -79.97053635),
-    (43.38832077, -81.73173649),
-    (43.71645113, -81.739295),
-    (43.71589927, -81.75217319),
-    (43.77013518, -81.7377233),
-    (43.80358122, -81.73576572),
-    (43.82147423, -81.72826167),
-    (43.87018196, -81.73119804),
-    (43.95617618, -81.72837716),
-    (43.95536355, -81.72961525),
-    (43.99225997, -81.74213795),
-    (44.03075405, -81.73943605),
-    (44.05398011, -81.75367101),
-    (44.05771059, -81.75146604),
-    (44.07157434, -81.76282259),
-    (44.08501486, -81.75306706),
-    (44.10171526, -81.73342237),
-    (44.10551796, -81.7231963),
-    (44.30047023, -81.60767854),
-    (44.32989211, -81.62552319),
-    (44.33445024, -81.60322005),
-    (44.33675589, -81.5861354),
-    (44.42462068, -81.53391396),
-    (44.45597773, -81.41207514),
-    (44.55535743, -81.35996158),
-    (45.06491679, -81.58126228),
-    (45.30888364, -81.84962809),
-    (45.35263196, -81.58126228),
-    (45.25415071, -81.18260292),
-    (45.12120409, -81.18649228),
-    (44.97281572, -81.09898169),
-    (44.98382065, -80.95702006),
-    (44.77850712, -80.78199888),
-    (44.73271613, -80.59703225),
-    (44.63476686, -80.55447134),
-    (44.62857853, -80.45772949),
-    (44.59600658, -80.45918203),
-    (44.54131477, -80.24145688),
-    (44.96939187, -80.25255188),
-    (45.00156485, -79.9944078),
-    (45.03031091, -80.02721268),
-    (45.50897118, -76.48035557),
-    (45.4923879, -76.42547571),
-    (45.46607271, -76.3004954),
-    (45.51243609, -76.25640548),
-    (45.5238893, -76.14470942),
-    (45.49429709, -76.01326221),
-    (45.37864314, -75.8225616),
-    (45.41738015, -75.73402203),
-    (45.43458808, -75.72040056),
-    (45.46564465, -75.68430366),
-    (45.47042107, -75.62096382),
-    (45.52675223, -75.41051208),
-    (45.58588696, -75.25454622),
-    (45.59589556, -75.04341341),
-    (45.64400718, -74.98279786),
-    (45.63734071, -74.80912409),
-    (45.63972168, -74.65996897),
-    (45.56824844, -74.37255591),
-    (45.3087538, -74.47267373),
-    (45.20165851, -74.29129532),
-    (45.17540827, -74.31470722),
-    (45.04247162, -74.55308298),
-    (44.9980906, -74.66694997),
-    (44.98981237, -74.74569911),
-    (45.0055682, -74.77343423),
-    (44.96675872, -74.95301419),
-    (44.89141695, -75.16418691),
-    (44.65178841, -75.57323014),
-    (44.51624554, -75.75893589),
-    (44.51091913, -75.73837121),
-    (44.11879629, -76.359477),
-    (44.06923212, -76.51779808),
-    (43.80321178, -77.04959455),
-    (43.85592561, -77.30128448),
-    (43.96997917, -77.67475986),
-    (43.89981823, -78.23497293),
-    (43.87568031, -78.43468662),
-    (44.02245114, -78.75180326),
-    (44.007223, -79.28352851),
-    (43.97844807, -79.69290989),
-    (43.69673616, -79.97053635)
+polygon_SouthOfEdmonton = Polygon([
+    (53.55553094, -114.03130576),
+    (53.4167272, -114.03255323),
+    (53.31474832, -113.91903339),
+    (53.23791725, -113.69823105),
+    (53.22671673, -113.56849409),
+    (53.24836842, -113.18427309),
+    (53.5762753, -113.01461706),
+    (53.50243339, -110.00377323),
+    (53.31762057, -110.00096103),
+    (53.21968902, -110.00209789),
+    (53.1475128, -110.00209789),
+    (52.84412248, -110.00337243),
+    (48.99913055, -110.00270566),
+    (48.99680373, -111.69899418),
+    (48.99859613, -113.48778087),
+    (49.00466077, -114.06914793),
+    (49.051805, -114.05065923),
+    (49.07939732, -114.1276955),
+    (49.14058405, -114.16467291),
+    (49.15872384, -114.16467291),
+    (49.19162724, -114.23451913),
+    (49.17551402, -114.28587665),
+    (49.21310337, -114.39989033),
+    (49.24597062, -114.38345592),
+    (49.26474209, -114.44713924),
+    (49.38858851, -114.57245158),
+    (49.45339973, -114.61251044),
+    (49.51378852, -114.58110718),
+    (49.56678001, -114.58477738),
+    (49.55478748, -114.63818919),
+    (49.55945159, -114.73474132),
+    (49.62070996, -114.74295852),
+    (49.64598988, -114.66181365),
+    (49.70647531, -114.65975935),
+    (49.74100465, -114.62586339),
+    (49.7695392, -114.6546236),
+    (49.96947183, -114.67413945),
+    (50.38650836, -114.81485904),
+    (50.57409707, -115.02747915),
+    (50.52841237, -115.2062033),
+    (50.71999074, -115.3633573),
+    (50.73107632, -115.43408915),
+    (50.85002018, -115.63510018),
+    (50.90753636, -115.58134141),
+    (51.01353362, -115.67717225),
+    (51.08516826, -115.79283366),
+    (51.06824959, -116.06716859),
+    (51.37960225, -116.37162475),
+    (51.40963136, -116.31896794),
+    (52.28018639, -117.7493307),
+    (52.7667831, -118.456811),
+    (52.93860097, -118.60292107),
+    (53.25260316, -118.99511124),
+    (53.22498922, -119.34885139),
+    (53.5186203, -119.87177161),
+    (53.59736172, -119.90627337),
+    (53.55553094, -114.03130576),
+    (51.21463168, -114.5251865),
+    (51.06945384, -114.6147229),
+    (50.88422136, -114.61123447),
+    (50.73874109, -114.47053442),
+    (50.7107688, -114.01587559),
+    (50.72181249, -113.77401105),
+    (50.84018427, -113.66005564),
+    (51.01681467, -113.46005227),
+    (51.11035407, -113.52633246),
+    (51.2546757, -113.65191597),
+    (51.33102662, -113.87401274),
+    (51.3259405, -113.99610782),
+    (51.30268252, -114.27285667),
+    (51.21463168, -114.5251865),
 ])
 
-polygon_NorthernOntario = Polygon([
-    (45.50897118, -76.48035557),
-    (45.03031091, -80.02721268),
-    (45.67526235, -80.76760838),
-    (45.91014877, -81.15910959),
-    (45.46493378, -81.54150611),
-    (45.50323392, -82.32450851),
-    (45.78330607, -83.52632615),
-    (46.17557711, -84.09992094),
-    (46.37067065, -84.0726069),
-    (46.43973047, -84.47321278),
-    (46.54628732, -84.67351572),
-    (46.88960008, -84.82829527),
-    (46.94704061, -84.97520889),
-    (47.36040308, -84.89202802),
-    (47.83572798, -86.36894955),
-    (48.23225032, -86.20416613),
-    (48.66131606, -86.75150551),
-    (48.6693093, -87.70761166),
-    (48.40486256, -88.3853578),
-    (48.0986359, -88.96628306),
-    (47.97725195, -89.42618223),
-    (48.04202564, -90.0192101),
-    (48.03393338, -91.84670414),
-    (48.54126522, -93.32322251),
-    (48.6293304, -94.8239461),
-    (49.03562892, -95.199127),
-    (52.85317039, -95.16281917),
-    (56.98719545, -88.79684653),
-    (56.82504535, -87.99720174),
-    (56.12008621, -87.18719945),
-    (55.11587993, -81.69416786),
-    (53.53472463, -81.53528078),
-    (52.84515204, -80.36579493),
-    (52.40507281, -80.15558328),
-    (51.61840375, -79.7363532),
-    (51.60952138, -79.5384767),
-    (48.64814624, -79.51767555),
-    (47.57804507, -79.51939917),
-    (47.55426886, -79.50178033),
-    (47.47367381, -79.56104368),
-    (47.40813306, -79.5442257),
-    (47.32622799, -79.47855551),
-    (47.23794303, -79.41368617),
-    (47.1179115, -79.44772255),
-    (47.02682267, -79.3556241),
-    (46.9142471, -79.28594963),
-    (46.83733025, -79.19305033),
-    (46.76030315, -79.12537799),
-    (46.69827251, -79.08933947),
-    (46.59904018, -78.99443803),
-    (46.51836596, -78.94318324),
-    (46.44778107, -78.83426682),
-    (46.4005785, -78.75015843),
-    (46.40513397, -78.74115541),
-    (46.32614733, -78.70043668),
-    (46.29032909, -78.37320265),
-    (46.28641476, -78.22156825),
-    (46.20686308, -77.82853883),
-    (46.20022857, -77.68954062),
-    (46.17754454, -77.59470811),
-    (46.05672749, -77.36631532),
-    (46.00929494, -77.27010591),
-    (45.9715134, -77.29771382),
-    (45.92090389, -77.23608402),
-    (45.84635994, -77.14015347),
-    (45.79758053, -77.00462369),
-    (45.79019188, -76.9611203),
-    (45.80652338, -76.92765615),
-    (45.85063339, -76.92765615),
-    (45.89005017, -76.93602219),
-    (45.90247134, -76.88331616),
-    (45.87898523, -76.7787407),
-    (45.84597143, -76.75671014),
-    (45.7874695, -76.77595203),
-    (45.73824923, -76.75782561),
-    (45.72345522, -76.68922412),
-    (45.64630721, -76.67974261),
-    (45.56104817, -76.65352903),
-    (45.53965981, -76.58195768),
-    (45.50897118, -76.48035557)
+polygon_Calgary = Polygon([
+    (50.72181249, -113.77401105),
+    (50.7107688, -114.01587559),
+    (50.73874109, -114.47053442),
+    (50.88422136, -114.61123447),
+    (51.06945384, -114.6147229),
+    (51.21463168, -114.5251865),
+    (51.30268252, -114.27285667),
+    (51.3259405, -113.99610782),
+    (51.33102662, -113.87401274),
+    (51.2546757, -113.65191597),
+    (51.11035407, -113.52633246),
+    (51.01681467, -113.46005227),
+    (50.84018427, -113.66005564),
+    (50.72181249, -113.77401105),
 ])
-
-# Define the coordinates of your polygon
-polygon_SouthernOntario = Polygon([
-    (43.38832077, -81.73173649),
-    (43.69673616, -79.97053635),
-    (43.4786045, -79.80584269),
-    (43.40218933, -79.67253612),
-    (43.3282737, -79.75987518),
-    (43.2893307, -79.77481032),
-    (43.22615524, -79.54903225),
-    (43.22795231, -79.54804908),
-    (43.20751926, -79.28143093),
-    (43.23946611, -79.25186333),
-    (43.27102503, -79.06324246),
-    (43.14208748, -79.0250085),
-    (42.97779925, -78.97951407),
-    (42.95594173, -78.90732755),
-    (42.88485117, -78.91106134),
-    (42.87208264, -78.95711136),
-    (42.84745016, -79.0479668),
-    (42.82280786, -79.08779384),
-    (42.84106236, -79.11393034),
-    (42.86022379, -79.20851956),
-    (42.82554638, -79.33920204),
-    (42.83259314, -79.74276088),
-    (42.82262391, -79.75024297),
-    (42.77806155, -80.04986583),
-    (42.74911794, -80.15099703),
-    (42.75459089, -80.20548878),
-    (42.65552884, -80.32118756),
-    (42.55384468, -80.00381581),
-    (42.51257409, -80.0834699),
-    (42.5602621, -80.3859065),
-    (42.56759548, -80.60619983),
-    (42.63355714, -80.94348509),
-    (42.62256838, -81.32184199),
-    (42.57771545, -81.42374817),
-    (42.56942869, -81.4214096),
-    (42.36009566, -81.80847867),
-    (42.31041428, -81.79478812),
-    (42.24687541, -81.85701787),
-    (42.23950444, -81.93418277),
-    (42.18972786, -82.11713824),
-    (42.19664486, -82.12549485),
-    (42.09467489, -82.4058843),
-    (42.01520098, -82.41584106),
-    (41.88190576, -82.47682622),
-    (41.90691985, -82.52163164),
-    (41.91856509, -82.53024565),
-    (41.98493634, -82.56955154),
-    (42.01372886, -82.59606042),
-    (42.01941005, -82.61441272),
-    (42.02243981, -82.65366625),
-    (42.01789511, -82.72503631),
-    (41.98784806, -82.80394808),
-    (41.98342945, -82.84006084),
-    (41.98677888, -82.84045353),
-    (41.97546227, -82.90091253),
-    (41.99289347, -82.99369361),
-    (42.01827385, -83.03345693),
-    (42.02887758, -83.09514105),
-    (42.05045827, -83.13439458),
-    (42.14313393, -83.12521843),
-    (42.21189103, -83.12980651),
-    (42.26133475, -83.1338848),
-    (42.31827906, -83.07016153),
-    (42.33410873, -83.00643826),
-    (42.34239887, -82.95291072),
-    (42.34275877, -82.88230675),
-    (42.35549718, -82.88380881),
-    (42.31593637, -82.72450064),
-    (42.3223782, -82.57141545),
-    (42.33065958, -82.47558163),
-    (42.36929161, -82.4307762),
-    (42.42839159, -82.40600488),
-    (42.46006798, -82.44442694),
-    (42.44513556, -82.44131338),
-    (42.52112393, -82.68173635),
-    (42.55105748, -82.6689917),
-    (42.59915585, -82.53596938),
-    (42.63504543, -82.50835681),
-    (42.64800549, -82.51064065),
-    (42.67559664, -82.50574671),
-    (42.76789259, -82.46482134),
-    (42.76691981, -82.46659513),
-    (42.80690622, -82.4845396),
-    (42.85404262, -82.47051029),
-    (42.88273753, -82.46855271),
-    (42.92193232, -82.45843855),
-    (42.95370005, -82.42711729),
-    (42.98903134, -82.42581224),
-    (43.00525783, -82.41928698),
-    (43.01353714, -82.40106089),
-    (43.0151212, -82.40215052),
-    (43.17961302, -82.05117471),
-    (43.21862623, -82.04121795),
-    (43.22588175, -81.96405305),
-    (43.37947593, -81.73153332),
-    (43.38832077, -81.73173649)
-])
-
 # Load the configuration file
 with open('config.json', 'r') as f:
     config = json.load(f)
-
-# Define if we should use the filter or just open it up wide to everyone
-skipPolygon = True
 
 DISCORD_WEBHOOK_URL = os.environ['DISCORD_WEBHOOK']
 AWS_ACCESS_KEY_ID = os.environ['AWS_DB_KEY']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_DB_SECRET_ACCESS_KEY']
 
-discordUsername = "ON511"
+discordUsername = "AB511"
 discordAvatarURL = "https://pbs.twimg.com/profile_images/1256233970905341959/EKlyRkOM_400x400.jpg"
 
 # Create a DynamoDB resource object
@@ -351,36 +176,36 @@ def float_to_decimal(event):
 def check_which_polygon_point(point):
     # Function to see which polygon a point is in, and returns the text. Returns "Other" if unknown.
     try:
-        if polygon_GTA.contains(point):
-            return 'GTA'
-        elif polygon_CentralOntario.contains(point):
-            return 'Central Ontario'
-        elif polygon_NorthernOntario.contains(point):
-            return 'Northern Ontario'
-        elif polygon_SouthernOntario.contains(point):
-            return 'Southern Ontario'
+        if polygon_Edmonton.contains(point):
+            return 'Edmonton'
+        elif polygon_Calgary.contains(point):
+            return 'Calgary'
+        elif polygon_NorthOfEdmonton.contains(point):
+            return 'NorthOfEdmonton'
+        elif polygon_SouthOfEdmonton.contains(point):
+            return 'SouthOfEdmonton'
         else:
             return 'Other'
     except:
         return 'Other'
 
 def getThreadID(threadName):
-    if threadName == 'GTA':
-        return config['Thread-GTA']
-    elif threadName == 'Central Ontario':
-        return config['Thread-CentralOntario']
-    elif threadName == 'Northern Ontario':
-        return config['Thread-NorthernOntario']
-    elif threadName == 'Southern Ontario':
-        return config['Thread-SouthernOntario']
+    if threadName == 'Edmonton':
+        return config['Thread-Edmonton']
+    elif threadName == 'Calgary':
+        return config['Thread-Calgary']
+    elif threadName == 'NorthOfEdmonton':
+        return config['Thread-NorthOfEdmonton']
+    elif threadName == 'SouthOfEdmonton':
+        return config['Thread-SouthOfEdmonton']
     else:
         return config['Thread-CatchAll'] #Other catch all thread
 
 def unix_to_readable(unix_timestamp):
     utc_time = datetime.utcfromtimestamp(int(unix_timestamp))
-    eastern = timezone('US/Eastern')
-    eastern_time = utc_time.replace(tzinfo=timezone('UTC')).astimezone(eastern)
-    return eastern_time.strftime('%Y-%b-%d %I:%M %p')
+    local_tz = timezone(config['timezone'])
+    local_time = utc_time.replace(tzinfo=timezone('UTC')).astimezone(local_tz)
+    return local_time.strftime('%Y-%b-%d %I:%M %p')
 
 def post_to_discord_closure(event,threadName=None):
     # Create a webhook instance
@@ -400,7 +225,7 @@ def post_to_discord_closure(event,threadName=None):
 
 
     urlWME = f"https://www.waze.com/en-GB/editor?env=usa&lon={event['Longitude']}&lat={event['Latitude']}&zoomLevel=15"
-    url511 = f"https://511on.ca/map#{URLType}-{event['ID']}"
+    url511 = f"https://511.alberta.ca/map#{URLType}-{event['ID']}"
     urlLivemap = f"https://www.waze.com/live-map/directions?dir_first=no&latlng={event['Latitude']}%2C{event['Longitude']}&overlay=false&zoom=16"
 
     embed = DiscordEmbed(title=f"Closed", color=15548997)
@@ -411,7 +236,7 @@ def post_to_discord_closure(event,threadName=None):
     if 'PlannedEndDate' in event and event['PlannedEndDate'] is not None:
         embed.add_embed_field(name="Planned End Time", value=unix_to_readable(event['PlannedEndDate']))
     embed.add_embed_field(name="Links", value=f"[511]({url511}) | [WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
-    embed.set_footer(text="Contains information licensed under the Open Government Licence – Ontario.")
+    embed.set_footer(text=config['license_notice'])
     embed.set_timestamp(datetime.utcfromtimestamp(int(event['StartDate'])))
     # Send the closure notification
     webhook.add_embed(embed)
@@ -435,7 +260,7 @@ def post_to_discord_updated(event,threadName=None):
         URLType = 'Closures'
 
     urlWME = f"https://www.waze.com/en-GB/editor?env=usa&lon={event['Longitude']}&lat={event['Latitude']}&zoomLevel=15"
-    url511 = f"https://511on.ca/map#{URLType}-{event['ID']}"
+    url511 = f"https://511.alberta.ca/map#{URLType}-{event['ID']}"
     urlLivemap = f"https://www.waze.com/live-map/directions?dir_first=no&latlng={event['Latitude']}%2C{event['Longitude']}&overlay=false&zoom=16"
 
     embed = DiscordEmbed(title=f"Closure Update", color='ff9a00')
@@ -445,10 +270,10 @@ def post_to_discord_updated(event,threadName=None):
     embed.add_embed_field(name="Start Time", value=unix_to_readable(event['StartDate']))
     if 'PlannedEndDate' in event and event['PlannedEndDate'] is not None:
         embed.add_embed_field(name="Planned End Time", value=unix_to_readable(event['PlannedEndDate']))
-    if event['Comment'] != None:
+    if 'Comment' in event and event['Comment'] is not None:
         embed.add_embed_field(name="Comment", value=event['Comment'], inline=False)
     embed.add_embed_field(name="Links", value=f"[511]({url511}) | [WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
-    embed.set_footer(text="Contains information licensed under the Open Government Licence – Ontario.")
+    embed.set_footer(text=config['license_notice'])
     embed.set_timestamp(datetime.utcfromtimestamp(int(event['LastUpdated'])))
 
     # Send the closure notification
@@ -478,7 +303,7 @@ def post_to_discord_completed(event,threadName=None):
     embed.add_embed_field(name="Start Time", value=unix_to_readable(event['StartDate']))
     embed.add_embed_field(name="Ended", value=unix_to_readable(lastTouched))
     embed.add_embed_field(name="Links", value=f"[WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
-    embed.set_footer(text="Contains information licensed under the Open Government Licence – Ontario.")
+    embed.set_footer(text=config['license_notice'])
     embed.set_timestamp(datetime.utcfromtimestamp(lastTouched))
 
     # Send the closure notification
@@ -497,9 +322,9 @@ def check_and_post_events():
         update_last_execution_day()
 
     # Perform API call to ON511 API
-    response = requests.get("https://511on.ca/api/v2/get/event")
+    response = requests.get("https://511.alberta.ca/api/v2/get/event")
     if not response.ok:
-        raise Exception('Issue connecting to ON511 API')
+        raise Exception('Issue connecting to AB511 API')
 
     #use the response to close out anything recent
     close_recent_events(response)
@@ -512,44 +337,54 @@ def check_and_post_events():
         if event['IsFullClosure']:
             # Create a point from the event's coordinates
             point = Point(event['Latitude'], event['Longitude'])
-            # Check if the point is within the polygon
-            if polygon_filterPolygon.contains(point) | skipPolygon:
-                # Try to get the event with the specified ID and isActive=1 from the DynamoDB table
-                dbResponse = table.query(
-                    KeyConditionExpression=Key('EventID').eq(event['ID']),
-                    FilterExpression=Attr('isActive').eq(1)
-                )
-                #If the event is not in the DynamoDB table
-                if not dbResponse['Items']:
-                    # Set the EventID key in the event data
-                    event['EventID'] = event['ID']
-                    # Set the isActive attribute
-                    event['isActive'] = 1
-                    # set LastTouched
-                    event['lastTouched'] = utc_timestamp
-                    event['DetectedPolygon'] = check_which_polygon_point(point)
-                    # Convert float values in the event to Decimal
-                    event = float_to_decimal(event)
-                    # If the event is within the specified area and has not been posted before, post it to Discord
-                    post_to_discord_closure(event,event['DetectedPolygon'])
-                    # Add the event ID to the DynamoDB table
-                    table.put_item(Item=event)
-                else:
-                    # We have seen this event before
-                    # First, let's see if it has a lastupdated time
-                    event = float_to_decimal(event)
-                    lastUpdated = dbResponse['Items'][0].get('LastUpdated')
-                    if lastUpdated != None:
-                        # Now, see if the version we stored is different
-                        if lastUpdated != event['LastUpdated']:
-                            # Store the most recent updated time:
-                            event['EventID'] = event['ID']
-                            event['isActive'] = 1
-                            event['lastTouched'] = utc_timestamp
-                            event['DetectedPolygon'] = check_which_polygon_point(point)
-                            # It's different, so we should fire an update notification
-                            post_to_discord_updated(event,event['DetectedPolygon'])
-                            table.put_item(Item=event)
+            # Try to get the event with the specified ID and isActive=1 from the DynamoDB table
+            dbResponse = table.query(
+                KeyConditionExpression=Key('EventID').eq(event['ID']),
+                FilterExpression=Attr('isActive').eq(1)
+            )
+            #If the event is not in the DynamoDB table
+            if not dbResponse['Items']:
+                # Set the EventID key in the event data
+                event['EventID'] = event['ID']
+                # Set the isActive attribute
+                event['isActive'] = 1
+                # set LastTouched
+                event['lastTouched'] = utc_timestamp
+                event['DetectedPolygon'] = check_which_polygon_point(point)
+                # Convert float values in the event to Decimal
+                event = float_to_decimal(event)
+                # If the event is within the specified area and has not been posted before, post it to Discord
+                post_to_discord_closure(event,event['DetectedPolygon'])
+                # Add the event ID to the DynamoDB table
+                table.put_item(Item=event)
+            else:
+                # We have seen this event before
+                # First, let's see if it has a lastupdated time
+                event = float_to_decimal(event)
+                lastUpdated = dbResponse['Items'][0].get('LastUpdated')
+                if lastUpdated != None:
+                    # Now, see if the version we stored is different
+                    if lastUpdated != event['LastUpdated']:
+                        # Store the most recent updated time:
+                        event['EventID'] = event['ID']
+                        event['isActive'] = 1
+                        event['lastTouched'] = utc_timestamp
+                        event['DetectedPolygon'] = check_which_polygon_point(point)
+                        # It's different, so we should fire an update notification
+                        post_to_discord_updated(event,event['DetectedPolygon'])
+                        table.put_item(Item=event)
+                # get the lasttouched time
+                lastTouched_datetime = datetime.fromtimestamp(int(dbResponse['Items'][0].get('lastTouched')))
+                # store the current time now
+                now = datetime.fromtimestamp(utc_timestamp)
+                # Compute the difference in minutes between now and lastUpdated
+                time_diff_min = (now - lastTouched_datetime).total_seconds() / 60
+                # Compute the variability
+                variability = random.uniform(-2, 2)  # random float between -2 and 2
+                # Add variability to the time difference
+                time_diff_min += variability
+                # If time_diff_min > 5, then more than 5 minutes have passed (considering variability)
+                if abs(time_diff_min) > 5:
                     # let's store that we just saw it to keep track of the last touch time
                     table.update_item(
                         Key={'EventID': event['ID']},
