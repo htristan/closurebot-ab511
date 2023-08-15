@@ -1,11 +1,11 @@
 {
   "db_name": "AB511-ClosureDB",
   "function_name": "ClosureBot-AB511",
-  "Thread-Calgary": 1111,
-  "Thread-Edmonton": 1111,
-  "Thread-CatchAll": 1111,
-  "Thread-NorthOfEdmonton": 1111,
-  "Thread-SouthOfEdmonton": 1111,
+  "Thread-Calgary": 1140860103210311680,
+  "Thread-Edmonton": 1140859922934927452,
+  "Thread-CatchAll": 1140861867888214107,
+  "Thread-NorthOfEdmonton": 1140859799035195472,
+  "Thread-SouthOfEdmonton": 1140860041822478489,
   "license_notice": "Contains information licensed under the Open Government Licence – Alberta.",
   "timezone": "US/Mountain"
 }
