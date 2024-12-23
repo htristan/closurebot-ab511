@@ -11,8 +11,145 @@ import os
 from datetime import datetime, timedelta, date
 import calendar
 from pytz import timezone
+import logging
 import random
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Logs to the console
+    ]
+)
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+polygon_Edmonton = Polygon([
+   (53.24836842, -113.18427309),
+    (53.22671673, -113.56849409),
+    (53.23791725, -113.69823105),
+    (53.31474832, -113.91903339),
+    (53.4167272, -114.03255323),
+    (53.55553094, -114.03130576),
+    (53.68279995, -114.00885128),
+    (53.85974393, -113.84293767),
+    (53.87592649, -113.53855479),
+    (53.87739732, -113.2903081),
+    (53.78315977, -113.07075324),
+    (53.5762753, -113.01461706),
+    (53.24836842, -113.18427309),
+])
+
+polygon_NorthOfEdmonton = Polygon([
+    (53.50243339, -110.00377323),
+    (53.5762753, -113.01461706),
+    (53.78315977, -113.07075324),
+    (53.87739732, -113.2903081),
+    (53.87592649, -113.53855479),
+    (53.85974393, -113.84293767),
+    (53.68279995, -114.00885128),
+    (53.55553094, -114.03130576),
+    (53.59736172, -119.90627337),
+    (53.85107632, -120.01788168),
+    (54.96100652, -119.98712166),
+    (59.99900962, -119.95504949),
+    (60.02591534, -109.9782346),
+    (54.57031627, -109.9782346),
+    (54.0463325, -110.01212127),
+    (53.50243339, -110.00377323),
+])
+
+polygon_SouthOfEdmonton = Polygon([
+    (53.55553094, -114.03130576),
+    (53.4167272, -114.03255323),
+    (53.31474832, -113.91903339),
+    (53.23791725, -113.69823105),
+    (53.22671673, -113.56849409),
+    (53.24836842, -113.18427309),
+    (53.5762753, -113.01461706),
+    (53.50243339, -110.00377323),
+    (53.31762057, -110.00096103),
+    (53.21968902, -110.00209789),
+    (53.1475128, -110.00209789),
+    (52.84412248, -110.00337243),
+    (48.99913055, -110.00270566),
+    (48.99680373, -111.69899418),
+    (48.99859613, -113.48778087),
+    (49.00466077, -114.06914793),
+    (49.051805, -114.05065923),
+    (49.07939732, -114.1276955),
+    (49.14058405, -114.16467291),
+    (49.15872384, -114.16467291),
+    (49.19162724, -114.23451913),
+    (49.17551402, -114.28587665),
+    (49.21310337, -114.39989033),
+    (49.24597062, -114.38345592),
+    (49.26474209, -114.44713924),
+    (49.38858851, -114.57245158),
+    (49.45339973, -114.61251044),
+    (49.51378852, -114.58110718),
+    (49.56678001, -114.58477738),
+    (49.55478748, -114.63818919),
+    (49.55945159, -114.73474132),
+    (49.62070996, -114.74295852),
+    (49.64598988, -114.66181365),
+    (49.70647531, -114.65975935),
+    (49.74100465, -114.62586339),
+    (49.7695392, -114.6546236),
+    (49.96947183, -114.67413945),
+    (50.38650836, -114.81485904),
+    (50.57409707, -115.02747915),
+    (50.52841237, -115.2062033),
+    (50.71999074, -115.3633573),
+    (50.73107632, -115.43408915),
+    (50.85002018, -115.63510018),
+    (50.90753636, -115.58134141),
+    (51.01353362, -115.67717225),
+    (51.08516826, -115.79283366),
+    (51.06824959, -116.06716859),
+    (51.37960225, -116.37162475),
+    (51.40963136, -116.31896794),
+    (52.28018639, -117.7493307),
+    (52.7667831, -118.456811),
+    (52.93860097, -118.60292107),
+    (53.25260316, -118.99511124),
+    (53.22498922, -119.34885139),
+    (53.5186203, -119.87177161),
+    (53.59736172, -119.90627337),
+    (53.55553094, -114.03130576),
+    (51.21463168, -114.5251865),
+    (51.06945384, -114.6147229),
+    (50.88422136, -114.61123447),
+    (50.73874109, -114.47053442),
+    (50.7107688, -114.01587559),
+    (50.72181249, -113.77401105),
+    (50.84018427, -113.66005564),
+    (51.01681467, -113.46005227),
+    (51.11035407, -113.52633246),
+    (51.2546757, -113.65191597),
+    (51.33102662, -113.87401274),
+    (51.3259405, -113.99610782),
+    (51.30268252, -114.27285667),
+    (51.21463168, -114.5251865),
+])
+
+polygon_Calgary = Polygon([
+    (50.72181249, -113.77401105),
+    (50.7107688, -114.01587559),
+    (50.73874109, -114.47053442),
+    (50.88422136, -114.61123447),
+    (51.06945384, -114.6147229),
+    (51.21463168, -114.5251865),
+    (51.30268252, -114.27285667),
+    (51.3259405, -113.99610782),
+    (51.33102662, -113.87401274),
+    (51.2546757, -113.65191597),
+    (51.11035407, -113.52633246),
+    (51.01681467, -113.46005227),
+    (50.84018427, -113.66005564),
+    (50.72181249, -113.77401105),
+])
 # Define the coordinates of your polygon
 
 polygon_Edmonton = Polygon([
@@ -140,29 +277,47 @@ polygon_Calgary = Polygon([
     (50.84018427, -113.66005564),
     (50.72181249, -113.77401105),
 ])
+
 # Load the configuration file
 with open('config.json', 'r') as f:
     config = json.load(f)
 
 DISCORD_WEBHOOK_URL = os.environ['DISCORD_WEBHOOK']
-AWS_ACCESS_KEY_ID = os.environ['AWS_DB_KEY']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_DB_SECRET_ACCESS_KEY']
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_DB_KEY', None)
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_DB_SECRET_ACCESS_KEY', None)
 
 discordUsername = "AB511"
 discordAvatarURL = "https://pbs.twimg.com/profile_images/1256233970905341959/EKlyRkOM_400x400.jpg"
 
-# Create a DynamoDB resource object
-dynamodb = boto3.resource('dynamodb',
-    region_name='us-east-1',
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
-    )
+# Fallback mechanism for credentials
+try:
+    # Use environment variables if they exist
+    if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+        dynamodb = boto3.resource(
+            'dynamodb',
+            region_name='us-east-1',
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+        )
+    else:
+        # Otherwise, use IAM role permissions (default behavior of boto3)
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+except (NoCredentialsError, PartialCredentialsError):
+    print("AWS credentials are not properly configured. Ensure IAM role or environment variables are set.")
+    raise
 
 # Specify the name of your DynamoDB table
 table = dynamodb.Table(config['db_name'])
 
+utc_timestamp = None
+
+def update_utc_timestamp():
+    global utc_timestamp
+    utc_timestamp = calendar.timegm(datetime.utcnow().timetuple())
+
 # set the current UTC timestamp for use in a few places
-utc_timestamp = calendar.timegm(datetime.utcnow().timetuple())
+update_utc_timestamp()
+
 
 # Function to convert the float values in the event data to Decimal, as DynamoDB doesn't support float type
 def float_to_decimal(event):
@@ -339,13 +494,15 @@ def check_and_post_events():
             point = Point(event['Latitude'], event['Longitude'])
             # Try to get the event with the specified ID and isActive=1 from the DynamoDB table
             dbResponse = table.query(
-                KeyConditionExpression=Key('EventID').eq(event['ID']),
-                FilterExpression=Attr('isActive').eq(1)
+                KeyConditionExpression=Key('EventID').eq(str(event['ID'])),
+                FilterExpression=Attr('isActive').eq(1),
+                ConsistentRead=True
             )
             #If the event is not in the DynamoDB table
+            update_utc_timestamp()
             if not dbResponse['Items']:
                 # Set the EventID key in the event data
-                event['EventID'] = event['ID']
+                event['EventID'] = str(event['ID'])
                 # Set the isActive attribute
                 event['isActive'] = 1
                 # set LastTouched
@@ -373,8 +530,13 @@ def check_and_post_events():
                         # It's different, so we should fire an update notification
                         post_to_discord_updated(event,event['DetectedPolygon'])
                         table.put_item(Item=event)
-                # get the lasttouched time
-                lastTouched_datetime = datetime.fromtimestamp(int(dbResponse['Items'][0].get('lastTouched')))
+                # Get the lastTouched time
+                lastTouched = dbResponse['Items'][0].get('lastTouched')
+                if lastTouched is None:
+                    logging.warning(f"EventID: {event['ID']} - Missing lastTouched. Setting it now.")
+                    lastTouched_datetime = now
+                else:
+                    lastTouched_datetime = datetime.fromtimestamp(int(lastTouched))
                 # store the current time now
                 now = datetime.fromtimestamp(utc_timestamp)
                 # Compute the difference in minutes between now and lastUpdated
@@ -383,14 +545,22 @@ def check_and_post_events():
                 variability = random.uniform(-2, 2)  # random float between -2 and 2
                 # Add variability to the time difference
                 time_diff_min += variability
+                # Log calculated time difference and variability
+                logging.info(
+                    f"EventID: {event['ID']}, TimeDiff: {time_diff_min:.2f} minutes (Variability: {variability:.2f}), LastTouched: {lastTouched_datetime}, Now: {now}"
+                )
                 # If time_diff_min > 5, then more than 5 minutes have passed (considering variability)
                 if abs(time_diff_min) > 5:
-                    # let's store that we just saw it to keep track of the last touch time
-                    table.update_item(
-                        Key={'EventID': event['ID']},
+                    logging.info(f"EventID: {event['ID']} - Updating lastTouched to {utc_timestamp}.")
+                    response = table.update_item(
+                        Key={'EventID': str(event['ID'])},
                         UpdateExpression="SET lastTouched = :val",
                         ExpressionAttributeValues={':val': utc_timestamp}
                     )
+                    logging.info(f"Update response for EventID {event['ID']}: {response}")
+                    logging.info(f"EventID: {event['ID']} - lastTouched updated successfully.")
+                # else:
+                #     logging.info(f"EventID: {event['ID']} - No update needed. TimeDiff: {time_diff_min:.2f}")
 
 def close_recent_events(responseObject):
     #function uses the API response from ON511 to determine what we stored in the DB that can now be closed
@@ -423,7 +593,7 @@ def close_recent_events(responseObject):
             item = float_to_decimal(item)
             # Remove the isActive attribute from the item
             table.update_item(
-                Key={'EventID': item['EventID']},
+                Key={'EventID': str(item['EventID'])},
                 UpdateExpression="SET isActive = :val",
                 ExpressionAttributeValues={':val': 0}
             )
@@ -450,7 +620,7 @@ def cleanup_old_events():
         for item in response['Items']:
             table.delete_item(
                 Key={
-                    'EventID': item['EventID']
+                    'EventID': str(item['EventID'])
                 }
             )
         # If the scan returned a LastEvaluatedKey, continue the scan from where it left off
@@ -482,5 +652,46 @@ def update_last_execution_day():
         }
     )
 
+def generate_geojson():
+    # Create a dictionary to store GeoJSON
+    geojson = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+
+    # Define your polygons and their names
+    polygons = {
+        "Edmonton": polygon_Edmonton,
+        "Calgary": polygon_Calgary
+    }
+
+    # Convert each polygon to GeoJSON format
+    for name, polygon in polygons.items():
+        feature = {
+            "type": "Feature",
+            "properties": {
+                "name": name
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    list(map(lambda coord: [coord[1], coord[0]], polygon.exterior.coords))  # Convert (lat, lon) to [lon, lat]
+                ]
+            }
+        }
+        geojson["features"].append(feature)
+
+    # Write GeoJSON to a file
+    with open("polygons.geojson", "w") as f:
+        json.dump(geojson, f, indent=2)
+
+    print("GeoJSON saved as 'polygons.geojson'")
+
 def lambda_handler(event, context):
     check_and_post_events()
+
+if __name__ == "__main__":
+    # Simulate the Lambda environment by passing an empty event and context
+    event = {}
+    context = None
+    lambda_handler(event, context)
