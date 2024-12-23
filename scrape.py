@@ -150,7 +150,6 @@ polygon_Calgary = Polygon([
     (50.84018427, -113.66005564),
     (50.72181249, -113.77401105),
 ])
-=======
 # Define the coordinates of your polygon
 
 polygon_Edmonton = Polygon([
