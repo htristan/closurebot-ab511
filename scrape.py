@@ -9,9 +9,9 @@ from shapely.geometry import Point, Polygon
 from decimal import Decimal
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import os
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 import calendar
-from pytz import timezone
+from pytz import timezone as pytz_timezone
 import logging
 import random
 
@@ -314,7 +314,7 @@ utc_timestamp = None
 
 def update_utc_timestamp():
     global utc_timestamp
-    utc_timestamp = calendar.timegm(datetime.utcnow().timetuple())
+    utc_timestamp = calendar.timegm(datetime.now(timezone.utc).timetuple())
 
 # set the current UTC timestamp for use in a few places
 update_utc_timestamp()
@@ -358,9 +358,9 @@ def getThreadID(threadName):
         return config['Thread-CatchAll'] #Other catch all thread
 
 def unix_to_readable(unix_timestamp):
-    utc_time = datetime.utcfromtimestamp(int(unix_timestamp))
-    local_tz = timezone(config['timezone'])
-    local_time = utc_time.replace(tzinfo=timezone('UTC')).astimezone(local_tz)
+    utc_time = datetime.fromtimestamp(int(unix_timestamp), timezone.utc)
+    local_tz = pytz_timezone(config['timezone'])
+    local_time = utc_time.astimezone(local_tz)
     return local_time.strftime('%Y-%b-%d %I:%M %p')
 
 def post_to_discord_closure(event,threadName=None):
@@ -393,7 +393,7 @@ def post_to_discord_closure(event,threadName=None):
         embed.add_embed_field(name="Planned End Time", value=unix_to_readable(event['PlannedEndDate']))
     embed.add_embed_field(name="Links", value=f"[511]({url511}) | [WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
     embed.set_footer(text=config['license_notice'])
-    embed.set_timestamp(datetime.utcfromtimestamp(int(event['StartDate'])))
+    embed.set_timestamp(datetime.fromtimestamp(int(event['StartDate']), timezone.utc))
     # Send the closure notification
     webhook.add_embed(embed)
     webhook.execute()
@@ -430,7 +430,7 @@ def post_to_discord_updated(event,threadName=None):
         embed.add_embed_field(name="Comment", value=event['Comment'], inline=False)
     embed.add_embed_field(name="Links", value=f"[511]({url511}) | [WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
     embed.set_footer(text=config['license_notice'])
-    embed.set_timestamp(datetime.utcfromtimestamp(int(event['LastUpdated'])))
+    embed.set_timestamp(datetime.fromtimestamp(int(event['LastUpdated']), timezone.utc))
 
     # Send the closure notification
     webhook.add_embed(embed)
@@ -460,7 +460,7 @@ def post_to_discord_completed(event,threadName=None):
     embed.add_embed_field(name="Ended", value=unix_to_readable(lastTouched))
     embed.add_embed_field(name="Links", value=f"[WME]({urlWME}) | [Livemap]({urlLivemap})", inline=False)
     embed.set_footer(text=config['license_notice'])
-    embed.set_timestamp(datetime.utcfromtimestamp(lastTouched))
+    embed.set_timestamp(datetime.fromtimestamp(lastTouched, timezone.utc))
 
     # Send the closure notification
     webhook.add_embed(embed)
