@@ -4,10 +4,6 @@ permissions:
   id-token: write
   contents: read
 
-permissions:
-  id-token: write
-  contents: read
-
 on:
   push:
     branches:
