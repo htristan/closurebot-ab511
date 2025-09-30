@@ -79,19 +79,19 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: closurebot
-        IMAGE_TAG: closurebot-on511-${{ github.sha }}
-        LATEST_TAG: latest-closurebot-on511
+        IMAGE_TAG: closurebot-ab511-${{ github.sha }}
+        LATEST_TAG: latest-closurebot-ab511
       run: |
         # Set image tags based on branch
         if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-          IMAGE_TAG="closurebot-on511-${{ github.sha }}"
-          LATEST_TAG="latest-closurebot-on511"
+          IMAGE_TAG="closurebot-ab511-${{ github.sha }}"
+          LATEST_TAG="latest-closurebot-ab511"
         elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-          IMAGE_TAG="closurebot-on511-dev-${{ github.sha }}"
-          LATEST_TAG="latest-closurebot-on511-dev"
+          IMAGE_TAG="closurebot-ab511-dev-${{ github.sha }}"
+          LATEST_TAG="latest-closurebot-ab511-dev"
         else
-          IMAGE_TAG="closurebot-on511-dev-${{ github.sha }}"
-          LATEST_TAG="latest-closurebot-on511-dev"
+          IMAGE_TAG="closurebot-ab511-dev-${{ github.sha }}"
+          LATEST_TAG="latest-closurebot-ab511-dev"
         fi
         
         # Build a docker container and push it to ECR
