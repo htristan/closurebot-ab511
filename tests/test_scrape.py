@@ -10,6 +10,7 @@ import os
 
 # Add this before the scrape import
 os.environ['DISCORD_WEBHOOK'] = 'https://mock-discord-webhook.com/test'
+os.environ['AB511_API_KEY'] = 'test-api-key'
 
 from scrape import (
     check_which_polygon_point, getThreadID, unix_to_readable,
@@ -228,7 +229,11 @@ def test_check_and_post_events(mock_post, mock_get, mock_dynamodb_table, sample_
          patch('scrape.config', mock_config):
         # Test the main function
         check_and_post_events()
-        
+
+        mock_get.assert_called_once_with(
+            "https://511.alberta.ca/api/v2/get/event",
+            params={'key': 'test-api-key', 'format': 'json', 'lang': 'en'},
+        )
         # Verify Discord post was called for new events
         assert mock_post.call_count > 0
 

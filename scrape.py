@@ -477,10 +477,20 @@ def check_and_post_events():
         # Update last execution day to current date
         update_last_execution_day()
 
-    # Perform API call to ON511 API
-    response = requests.get("https://511.alberta.ca/api/v2/get/event")
+    # Perform API call to AB511 API
+    api_key = os.environ.get('AB511_API_KEY')
+    if not api_key:
+        raise Exception('AB511 API key is required. Set AB511_API_KEY environment variable.')
+
+    api_url = "https://511.alberta.ca/api/v2/get/event"
+    params = {
+        'key': api_key,
+        'format': 'json',
+        'lang': 'en'
+    }
+    response = requests.get(api_url, params=params)
     if not response.ok:
-        raise Exception('Issue connecting to AB511 API')
+        raise Exception(f'Issue connecting to AB511 API: {response.status_code} {response.text[:200]}')
 
     #use the response to close out anything recent
     close_recent_events(response)
