@@ -10,6 +10,7 @@ import os
 
 # Add this before the scrape import
 os.environ['DISCORD_WEBHOOK'] = 'https://mock-discord-webhook.com/test'
+os.environ['AB511_API_KEY'] = 'test-api-key'
 
 from scrape import (
     check_which_polygon_point, getThreadID, unix_to_readable,
@@ -178,6 +179,25 @@ def test_close_recent_events(sample_db_items):
         close_recent_events(mock_response)
         mock_post.assert_called_once()
 
+@patch('scrape.post_to_discord_completed')
+def test_close_recent_events_scans_every_page(mock_post):
+    page_one_item = {"EventID": "1001", "isActive": 1}
+    page_two_item = {"EventID": "1002", "isActive": 1}
+    mock_table = Mock()
+    mock_table.scan.side_effect = [
+        {"Items": [page_one_item], "LastEvaluatedKey": {"EventID": "1001"}},
+        {"Items": [page_two_item]},
+    ]
+    mock_response = Mock()
+    mock_response.text = json.dumps([])
+
+    with patch('scrape.table', mock_table):
+        close_recent_events(mock_response)
+
+    assert mock_table.scan.call_count == 2
+    assert mock_table.scan.call_args_list[1].kwargs["ExclusiveStartKey"] == {"EventID": "1001"}
+    assert [call.args[0]["EventID"] for call in mock_post.call_args_list] == ["1001", "1002"]
+
 # Utility Function Tests
 def test_float_to_decimal(sample_event):
     result = float_to_decimal(sample_event)
@@ -209,7 +229,11 @@ def test_check_and_post_events(mock_post, mock_get, mock_dynamodb_table, sample_
          patch('scrape.config', mock_config):
         # Test the main function
         check_and_post_events()
-        
+
+        mock_get.assert_called_once_with(
+            "https://511.alberta.ca/api/v2/get/event",
+            params={'key': 'test-api-key', 'format': 'json', 'lang': 'en'},
+        )
         # Verify Discord post was called for new events
         assert mock_post.call_count > 0
 
